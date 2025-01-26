@@ -15,33 +15,39 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const onSubmitHandler = async (e) => {
-        e.preventDefault();
-        axios.defaults.withCredentials = true;
-
         try {
-            const endpoint = state === 'Sign Up' 
-                ? '/api/auth/register' 
-                : '/api/auth/login';
-            const payload = state === 'Sign Up' 
-                ? { name, email, password } 
-                : { email, password };
+            e.preventDefault();
 
-            const { data } = await axios.post(backendUrl + endpoint, payload);
+            axios.defaults.withCredentials = true
 
-            if (data.success) {
-                setIsLoggedin(true);
-                getUserData();
-                navigate('/');
-            } else {
-                toast.error(data.message);
+            if(state === 'Sign Up'){
+                const {data} = await axios.post(backendUrl + '/api/auth/register', {name,email,password})
+
+                if(data.success){
+                    setIsLoggedin(true)
+                    getUserData()
+                    navigate('/')
+                }else{
+                    toast.error(data.message)
+                }
+            }else{
+                const {data} = await axios.post(backendUrl + '/api/auth/login',{email,password})
+
+                if(data.success){
+                    setIsLoggedin(true)
+                    getUserData()
+                    navigate('/')
+                }else{
+                    toast.error(data.message)
+                }
             }
         } catch (error) {
-            toast.error(error.message);
+            toast.error(data.message)
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-100 to-blue-300">
+        <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-100 to-blue-300" >
             <img 
                 onClick={() => navigate('/')} 
                 src={assets.logo} 
